@@ -32,9 +32,10 @@ bool SettingsManager::hasApiKey(const QString &providerId) const
 QStringList SettingsManager::providersWithKeys() const
 {
     QStringList result;
-    m_settings.beginGroup(QString(KEY_PREFIX).chopped(1));
-    result = m_settings.childKeys();
-    m_settings.endGroup();
+    const_cast<SettingsManager *>(this)->m_settings.beginGroup(
+        QString(KEY_PREFIX).chopped(1));
+    result = const_cast<SettingsManager *>(this)->m_settings.childKeys();
+    const_cast<SettingsManager *>(this)->m_settings.endGroup();
     return result;
 }
 
@@ -58,6 +59,8 @@ QString SettingsManager::defaultModel(const QString &providerId) const
         return m_settings.value(key, "claude-sonnet-4-20250514").toString();
     if (providerId == "gemini")
         return m_settings.value(key, "gemini-2.5-flash").toString();
+    if (providerId == "deepseek")
+        return m_settings.value(key, "deepseek-v4-pro").toString();
     return m_settings.value(key).toString();
 }
 

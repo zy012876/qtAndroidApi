@@ -3,11 +3,12 @@
 #include <QObject>
 #include <QJsonArray>
 
+#include "models/MessageListModel.h"
+#include "models/ConversationListModel.h"
+
 class ProviderFactory;
 class DatabaseManager;
 class SettingsManager;
-class MessageListModel;
-class ConversationListModel;
 class AiProviderBase;
 
 class ChatManager : public QObject

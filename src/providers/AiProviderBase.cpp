@@ -53,7 +53,7 @@ void AiProviderBase::sendMessage(const QString &userMessage,
 
         if (m_currentReply->error() != QNetworkReply::NoError) {
             int statusCode = m_currentReply->attribute(
-                QNetworkReply::HttpStatusCodeAttribute).toInt();
+                QNetworkRequest::HttpStatusCodeAttribute).toInt();
             emit errorOccurred(m_currentReply->errorString(), statusCode);
         } else {
             QByteArray data = m_currentReply->readAll();

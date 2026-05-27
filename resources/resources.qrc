@@ -8,5 +8,6 @@
         <file alias="history.svg">icons/history.svg</file>
         <file alias="add.svg">icons/add.svg</file>
         <file alias="delete.svg">icons/delete.svg</file>
+        <file alias="deepseek.svg">icons/deepseek.svg</file>
     </qresource>
 </RCC>

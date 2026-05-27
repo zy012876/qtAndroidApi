@@ -12,6 +12,7 @@ Page {
         if (providerId === "openai") return "OpenAI"
         if (providerId === "anthropic") return "Anthropic Claude"
         if (providerId === "gemini") return "Google Gemini"
+        if (providerId === "deepseek") return "DeepSeek"
         return ""
     }
 
@@ -19,6 +20,7 @@ Page {
         if (providerId === "openai") return "https://platform.openai.com/api-keys"
         if (providerId === "anthropic") return "https://console.anthropic.com/keys"
         if (providerId === "gemini") return "https://aistudio.google.com/apikey"
+        if (providerId === "deepseek") return "https://platform.deepseek.com/api_keys"
         return ""
     }
 

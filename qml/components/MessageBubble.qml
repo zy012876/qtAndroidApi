@@ -48,7 +48,8 @@ Item {
                 Label {
                     text: msgProviderName === "openai" ? "OpenAI" :
                           (msgProviderName === "anthropic" ? "Claude" :
-                           msgProviderName === "gemini" ? "Gemini" : msgProviderName)
+                           msgProviderName === "gemini" ? "Gemini" :
+                           msgProviderName === "deepseek" ? "DeepSeek" : msgProviderName)
                     color: Theme.secondaryTextColor
                     font.pixelSize: Theme.fontSizeSmall
                 }
@@ -107,7 +108,7 @@ Item {
         }
     }
 
-    SequentialAnimation on opacity {
+    NumberAnimation on opacity {
         id: fadeIn
         from: 0; to: 1
         duration: 200

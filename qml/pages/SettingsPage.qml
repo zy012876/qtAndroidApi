@@ -58,7 +58,7 @@ Page {
                 }
 
                 Repeater {
-                    model: ["openai", "anthropic", "gemini"]
+                    model: ["openai", "anthropic", "gemini", "deepseek"]
 
                     delegate: Rectangle {
                         Layout.fillWidth: true
@@ -85,6 +85,8 @@ Page {
                                         if (modelData === "openai") return "OpenAI"
                                         if (modelData === "anthropic") return "Anthropic Claude"
                                         if (modelData === "gemini") return "Google Gemini"
+                                        if (modelData === "deepseek") return "DeepSeek"
+                                        return modelData
                                     }
                                     color: Theme.primaryTextColor
                                     font.pixelSize: Theme.fontSizeBody
@@ -101,9 +103,8 @@ Page {
                             ToolButton {
                                 text: settingsManager.hasApiKey(modelData) ? "Edit" : "Add"
                                 onClicked: {
-                                    var comp = Qt.createComponent("../pages/ApiKeyManagementPage.qml")
-                                    var page = comp.createObject(settingsPage, {"providerId": modelData})
-                                    pageStack.push(page)
+                                    var page = pageStack.push("ApiKeyManagementPage.qml",
+                                        {"providerId": modelData})
                                 }
                             }
                         }

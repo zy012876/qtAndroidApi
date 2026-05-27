@@ -1,7 +1,7 @@
-#include "OpenAiProvider.h"
+#include "DeepSeekProvider.h"
 
-QNetworkRequest OpenAiProvider::buildRequest(const QString &model, bool stream,
-                                              const QVariantMap &extraParams)
+QNetworkRequest DeepSeekProvider::buildRequest(const QString &model, bool stream,
+                                                const QVariantMap &extraParams)
 {
     Q_UNUSED(model)
     Q_UNUSED(extraParams)
@@ -9,14 +9,16 @@ QNetworkRequest OpenAiProvider::buildRequest(const QString &model, bool stream,
     QNetworkRequest request{QUrl{defaultEndpoint()}};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Authorization", QString("Bearer %1").arg(m_apiKey).toUtf8());
-    request.setRawHeader("Accept", stream ? "text/event-stream" : "application/json");
+    if (stream) {
+        request.setRawHeader("Accept", "text/event-stream");
+    }
     return request;
 }
 
-QByteArray OpenAiProvider::buildRequestBody(const QString &userMessage,
-                                             const QJsonArray &history,
-                                             const QString &model,
-                                             bool stream)
+QByteArray DeepSeekProvider::buildRequestBody(const QString &userMessage,
+                                               const QJsonArray &history,
+                                               const QString &model,
+                                               bool stream)
 {
     QJsonObject body;
     body["model"] = model;
@@ -30,11 +32,18 @@ QByteArray OpenAiProvider::buildRequestBody(const QString &userMessage,
 
     body["messages"] = messages;
 
+    // DeepSeek-specific: thinking/reasoning parameters
+    QJsonObject thinking;
+    thinking["type"] = "enabled";
+    body["thinking"] = thinking;
+    body["reasoning_effort"] = "high";
+
     return QJsonDocument(body).toJson(QJsonDocument::Compact);
 }
 
-void OpenAiProvider::processResponseChunk(const QByteArray &chunk, QString & /*partialLine*/)
+void DeepSeekProvider::processResponseChunk(const QByteArray &chunk, QString & /*partialLine*/)
 {
+    // DeepSeek uses OpenAI-compatible SSE format
     m_partialLine += QString::fromUtf8(chunk);
 
     QStringList lines = m_partialLine.split('\n');
@@ -59,7 +68,11 @@ void OpenAiProvider::processResponseChunk(const QByteArray &chunk, QString & /*p
 
         QJsonValue first = choices[0];
         QJsonObject delta = first["delta"].toObject();
-        QString content = delta["content"].toString();
+
+        // Prefer reasoning_content (thinking mode), fall back to content
+        QString content = delta["reasoning_content"].toString();
+        if (content.isEmpty())
+            content = delta["content"].toString();
 
         if (!content.isEmpty()) {
             m_accumulatedResponse += content;
@@ -68,7 +81,7 @@ void OpenAiProvider::processResponseChunk(const QByteArray &chunk, QString & /*p
     }
 }
 
-QPair<QString, QVariantMap> OpenAiProvider::parseFinalResponse(const QByteArray &data)
+QPair<QString, QVariantMap> DeepSeekProvider::parseFinalResponse(const QByteArray &data)
 {
     QJsonDocument doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object();
@@ -76,8 +89,15 @@ QPair<QString, QVariantMap> OpenAiProvider::parseFinalResponse(const QByteArray 
     QJsonArray choices = obj["choices"].toArray();
     QString content;
     if (!choices.isEmpty()) {
-        QJsonValue firstMsg = choices[0];
-        content = firstMsg["message"].toObject()["content"].toString();
+        QJsonValue first = choices[0];
+        QJsonObject message = first["message"].toObject();
+        // Prefer reasoning_content + content combined
+        QString reasoning = message["reasoning_content"].toString();
+        QString text = message["content"].toString();
+        if (!reasoning.isEmpty())
+            content = reasoning + "\n\n" + text;
+        else
+            content = text;
     }
 
     QVariantMap metadata;

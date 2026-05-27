@@ -29,6 +29,7 @@ Row {
                         if (modelData === "openai") return "GPT"
                         if (modelData === "anthropic") return "Claude"
                         if (modelData === "gemini") return "Gemini"
+                        if (modelData === "deepseek") return "DeepSeek"
                         return modelData
                     }
                     anchors.verticalCenter: parent.verticalCenter

@@ -37,12 +37,14 @@ qt_add_executable(${PROJECT_NAME}
     src/providers/OpenAiProvider.cpp
     src/providers/AnthropicProvider.cpp
     src/providers/GeminiProvider.cpp
+    src/providers/DeepSeekProvider.cpp
     src/providers/ProviderFactory.cpp
     src/models/MessageListModel.cpp
     src/models/ConversationListModel.cpp
     src/managers/ChatManager.cpp
     src/managers/SettingsManager.cpp
     src/managers/DatabaseManager.cpp
+    src/ThemeProvider.cpp
     ${ANDROID_SOURCES}
     ${DESKTOP_SOURCES}
     resources/resources.qrc
@@ -53,7 +55,6 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     QML_FILES
         qml/main.qml
-        qml/Theme.qml
         qml/pages/ChatPage.qml
         qml/pages/ConversationsPage.qml
         qml/pages/SettingsPage.qml

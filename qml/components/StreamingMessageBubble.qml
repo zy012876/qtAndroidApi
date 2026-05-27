@@ -40,7 +40,8 @@ Item {
                 Label {
                     text: msgProviderName === "openai" ? "OpenAI" :
                           (msgProviderName === "anthropic" ? "Claude" :
-                           msgProviderName === "gemini" ? "Gemini" : msgProviderName)
+                           msgProviderName === "gemini" ? "Gemini" :
+                           msgProviderName === "deepseek" ? "DeepSeek" : msgProviderName)
                     color: Theme.secondaryTextColor
                     font.pixelSize: Theme.fontSizeSmall
                 }

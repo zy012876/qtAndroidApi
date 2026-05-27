@@ -4,7 +4,6 @@ import QtQuick.Layouts
 
 Rectangle {
     id: inputBar
-    property alias enabled: sendButton.enabled
     property bool isStreaming: false
 
     signal sendMessage(string text)
@@ -35,7 +34,7 @@ Rectangle {
                 radius: Theme.bubbleRadius
             }
 
-            onAccepted: function(event) {
+            Keys.onReturnPressed: function(event) {
                 if (text.trim() && !isStreaming) {
                     sendMessage(text)
                     text = ""

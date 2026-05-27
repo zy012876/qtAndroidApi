@@ -6,7 +6,7 @@ QNetworkRequest AnthropicProvider::buildRequest(const QString &model, bool strea
     Q_UNUSED(model)
     Q_UNUSED(extraParams)
 
-    QNetworkRequest request(QUrl(defaultEndpoint()));
+    QNetworkRequest request{QUrl{defaultEndpoint()}};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("x-api-key", m_apiKey.toUtf8());
     request.setRawHeader("anthropic-version", "2023-06-01");

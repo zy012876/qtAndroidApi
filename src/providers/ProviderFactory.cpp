@@ -2,6 +2,7 @@
 #include "OpenAiProvider.h"
 #include "AnthropicProvider.h"
 #include "GeminiProvider.h"
+#include "DeepSeekProvider.h"
 #include "managers/SettingsManager.h"
 
 ProviderFactory::ProviderFactory(QNetworkAccessManager *networkManager,
@@ -26,6 +27,8 @@ AiProviderBase *ProviderFactory::createProvider(const QString &providerId)
         provider = new AnthropicProvider(m_networkManager, this);
     } else if (providerId == "gemini") {
         provider = new GeminiProvider(m_networkManager, this);
+    } else if (providerId == "deepseek") {
+        provider = new DeepSeekProvider(m_networkManager, this);
     }
 
     if (provider) {
@@ -40,7 +43,7 @@ AiProviderBase *ProviderFactory::createProvider(const QString &providerId)
 
 QStringList ProviderFactory::availableProviderIds() const
 {
-    return {"openai", "anthropic", "gemini"};
+    return {"openai", "anthropic", "gemini", "deepseek"};
 }
 
 QStringList ProviderFactory::registeredProviderIds() const

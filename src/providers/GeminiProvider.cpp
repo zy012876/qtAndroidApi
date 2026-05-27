@@ -14,7 +14,7 @@ QNetworkRequest GeminiProvider::buildRequest(const QString &model, bool stream,
         endpoint += ":generateContent?key=" + m_apiKey;
     }
 
-    QNetworkRequest request(QUrl(endpoint));
+    QNetworkRequest request{QUrl{endpoint}};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     if (stream) {
         request.setRawHeader("Accept", "text/event-stream");
@@ -94,12 +94,14 @@ void GeminiProvider::processResponseChunk(const QByteArray &chunk, QString & /*p
         if (candidates.isEmpty())
             continue;
 
-        QJsonObject content = candidates[0]["content"].toObject();
+        QJsonValue first = candidates[0];
+        QJsonObject content = first["content"].toObject();
         QJsonArray parts = content["parts"].toArray();
         if (parts.isEmpty())
             continue;
 
-        QString text = parts[0]["text"].toString();
+        QJsonValue firstPart = parts[0];
+        QString text = firstPart["text"].toString();
         if (!text.isEmpty()) {
             m_accumulatedResponse += text;
             emit responseChunkReceived(text, m_currentConversationId);
@@ -115,7 +117,8 @@ QPair<QString, QVariantMap> GeminiProvider::parseFinalResponse(const QByteArray 
     QString content;
     QJsonArray candidates = obj["candidates"].toArray();
     if (!candidates.isEmpty()) {
-        QJsonObject contentObj = candidates[0]["content"].toObject();
+        QJsonValue first = candidates[0];
+        QJsonObject contentObj = first["content"].toObject();
         QJsonArray parts = contentObj["parts"].toArray();
         for (const auto &part : parts) {
             content += part.toObject()["text"].toString();

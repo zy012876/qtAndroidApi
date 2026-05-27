@@ -44,6 +44,7 @@ Dialog {
                     if (val === "openai") return "OpenAI"
                     if (val === "anthropic") return "Anthropic Claude"
                     if (val === "gemini") return "Google Gemini"
+                    if (val === "deepseek") return "DeepSeek"
                     return val
                 }
                 color: Theme.primaryTextColor
