@@ -1,0 +1,43 @@
+# Build directories
+build*/
+cmake-build-*/
+out/
+
+# IDE
+.idea/
+.vs/
+*.user
+*.pro.user*
+.qmake.stash
+
+# Qt Creator
+*.autosave
+
+# Compiled objects
+*.o
+*.obj
+*.moc
+*.rcc
+*.qm
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+
+# Libraries
+*.a
+*.so
+*.dll
+*.dylib
+
+# Android
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Qt Creator project settings
+CMakeLists.txt.user
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="openai.svg">icons/openai.svg</file>
+        <file alias="anthropic.svg">icons/anthropic.svg</file>
+        <file alias="gemini.svg">icons/gemini.svg</file>
+        <file alias="send.svg">icons/send.svg</file>
+        <file alias="settings.svg">icons/settings.svg</file>
+        <file alias="history.svg">icons/history.svg</file>
+        <file alias="add.svg">icons/add.svg</file>
+        <file alias="delete.svg">icons/delete.svg</file>
+    </qresource>
+</RCC>
