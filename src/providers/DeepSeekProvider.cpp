@@ -41,7 +41,7 @@ QByteArray DeepSeekProvider::buildRequestBody(const QString &userMessage,
     return QJsonDocument(body).toJson(QJsonDocument::Compact);
 }
 
-void DeepSeekProvider::processResponseChunk(const QByteArray &chunk, QString & /*partialLine*/)
+void DeepSeekProvider::processResponseChunk(const QByteArray &chunk)
 {
     // DeepSeek uses OpenAI-compatible SSE format
     m_partialLine += QString::fromUtf8(chunk);

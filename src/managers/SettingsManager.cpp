@@ -70,16 +70,6 @@ void SettingsManager::setDefaultModel(const QString &providerId, const QString &
     emit settingsChanged();
 }
 
-bool SettingsManager::darkMode() const
-{
-    return m_settings.value("darkMode", true).toBool();
-}
-
-void SettingsManager::setDarkMode(bool enabled)
-{
-    m_settings.setValue("darkMode", enabled);
-    emit settingsChanged();
-}
 
 QString SettingsManager::obfuscateKey(const QString &key) const
 {

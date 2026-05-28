@@ -9,13 +9,14 @@ QNetworkRequest GeminiProvider::buildRequest(const QString &model, bool stream,
 
     QString endpoint = defaultEndpoint() + model;
     if (stream) {
-        endpoint += ":streamGenerateContent?alt=sse&key=" + m_apiKey;
+        endpoint += ":streamGenerateContent?alt=sse";
     } else {
-        endpoint += ":generateContent?key=" + m_apiKey;
+        endpoint += ":generateContent";
     }
 
     QNetworkRequest request{QUrl{endpoint}};
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setRawHeader("X-Goog-Api-Key", m_apiKey.toUtf8());
     if (stream) {
         request.setRawHeader("Accept", "text/event-stream");
     }
@@ -70,7 +71,7 @@ QByteArray GeminiProvider::buildRequestBody(const QString &userMessage,
     return doc.toJson(QJsonDocument::Compact);
 }
 
-void GeminiProvider::processResponseChunk(const QByteArray &chunk, QString & /*partialLine*/)
+void GeminiProvider::processResponseChunk(const QByteArray &chunk)
 {
     m_partialLine += QString::fromUtf8(chunk);
 

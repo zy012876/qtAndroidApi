@@ -20,8 +20,6 @@ public:
     Q_INVOKABLE void setDefaultProvider(const QString &providerId);
     Q_INVOKABLE QString defaultModel(const QString &providerId) const;
     Q_INVOKABLE void setDefaultModel(const QString &providerId, const QString &model);
-    Q_INVOKABLE bool darkMode() const;
-    Q_INVOKABLE void setDarkMode(bool enabled);
 
 signals:
     void apiKeysChanged();

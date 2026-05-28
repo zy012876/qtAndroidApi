@@ -48,7 +48,7 @@ QByteArray AnthropicProvider::buildRequestBody(const QString &userMessage,
     return QJsonDocument(body).toJson(QJsonDocument::Compact);
 }
 
-void AnthropicProvider::processResponseChunk(const QByteArray &chunk, QString & /*partialLine*/)
+void AnthropicProvider::processResponseChunk(const QByteArray &chunk)
 {
     m_partialLine += QString::fromUtf8(chunk);
 

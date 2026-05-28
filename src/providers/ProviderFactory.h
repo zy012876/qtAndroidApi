@@ -19,7 +19,6 @@ public:
     Q_INVOKABLE AiProviderBase *createProvider(const QString &providerId);
     Q_INVOKABLE QStringList availableProviderIds() const;
     Q_INVOKABLE QStringList registeredProviderIds() const;
-    Q_INVOKABLE AiProviderBase *currentProvider() const;
 
 private:
     QHash<QString, AiProviderBase *> m_providers;

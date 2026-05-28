@@ -56,6 +56,12 @@ void ChatManager::sendMessage(const QString &text)
     userMsg.modelName = m_currentModel;
     userMsg.timestamp = QDateTime::currentDateTime();
 
+    // Auto-title conversation from first user message
+    if (m_currentMessages->count() == 0) {
+        QString title = text.trimmed().left(40);
+        m_databaseManager->updateConversation(m_currentConversationId, title);
+    }
+
     m_currentMessages->appendMessage(userMsg);
     persistMessage({{"role", userMsg.role}, {"content", userMsg.content}});
 
@@ -109,6 +115,7 @@ void ChatManager::sendMessage(const QString &text)
     m_isStreaming = true;
     emit isStreamingChanged();
 
+    provider->setConversationId(m_currentConversationId);
     provider->sendMessage(text.trimmed(), history, m_currentModel, true);
 }
 
@@ -142,6 +149,8 @@ void ChatManager::switchConversation(const QString &conversationId)
 {
     if (conversationId.isEmpty() || conversationId == m_currentConversationId)
         return;
+
+    cancelCurrentRequest();
 
     ConversationData conv = m_databaseManager->loadConversation(conversationId);
     if (conv.id.isEmpty())
@@ -219,15 +228,17 @@ void ChatManager::loadLastSession()
 
 void ChatManager::onResponseChunk(const QString &chunk, const QString &conversationId)
 {
-    Q_UNUSED(conversationId)
+    if (conversationId != m_currentConversationId)
+        return;
     m_currentMessages->updateLastAssistantMessage(chunk);
 }
 
 void ChatManager::onResponseComplete(const QString &fullResponse, const QString &conversationId,
                                       const QVariantMap &usage)
 {
-    Q_UNUSED(conversationId)
     Q_UNUSED(usage)
+    if (conversationId != m_currentConversationId)
+        return;
 
     m_currentMessages->finalizeLastAssistantMessage(fullResponse, m_currentModel);
     m_isStreaming = false;
@@ -246,8 +257,12 @@ void ChatManager::onResponseComplete(const QString &fullResponse, const QString 
     refreshConversations();
 }
 
-void ChatManager::onProviderError(const QString &errorMessage, int httpStatusCode)
+void ChatManager::onProviderError(const QString &errorMessage, int httpStatusCode,
+                                    const QString &conversationId)
 {
+    if (conversationId != m_currentConversationId)
+        return;
+
     m_isStreaming = false;
     emit isStreamingChanged();
 

@@ -23,7 +23,7 @@ protected:
                                  const QVariantMap &extraParams) override;
     QByteArray buildRequestBody(const QString &userMessage, const QJsonArray &history,
                                 const QString &model, bool stream) override;
-    void processResponseChunk(const QByteArray &chunk, QString &partialLine) override;
+    void processResponseChunk(const QByteArray &chunk) override;
     QPair<QString, QVariantMap> parseFinalResponse(const QByteArray &data) override;
 
 private:

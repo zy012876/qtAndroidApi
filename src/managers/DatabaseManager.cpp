@@ -29,42 +29,56 @@ bool DatabaseManager::initialize()
 
     query.exec("PRAGMA foreign_keys = ON");
 
-    bool ok = query.exec(
-        "CREATE TABLE IF NOT EXISTS conversations ("
-        "  id TEXT PRIMARY KEY,"
-        "  title TEXT NOT NULL DEFAULT 'New Chat',"
-        "  provider_name TEXT NOT NULL,"
-        "  model_name TEXT,"
-        "  created_at TEXT NOT NULL DEFAULT (datetime('now')),"
-        "  updated_at TEXT NOT NULL DEFAULT (datetime('now')),"
-        "  message_count INTEGER NOT NULL DEFAULT 0,"
-        "  preview TEXT"
-        ")");
-
-    if (!ok) {
-        qCritical() << "Failed to create conversations table:" << query.lastError().text();
-        return false;
+    // Schema version tracking
+    query.exec("CREATE TABLE IF NOT EXISTS schema_version (version INTEGER)");
+    int version = 0;
+    if (query.exec("SELECT version FROM schema_version")) {
+        if (query.next())
+            version = query.value(0).toInt();
     }
 
-    ok = query.exec(
-        "CREATE TABLE IF NOT EXISTS messages ("
-        "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "  conversation_id TEXT NOT NULL,"
-        "  role TEXT NOT NULL CHECK(role IN ('user', 'assistant', 'system')),"
-        "  content TEXT NOT NULL,"
-        "  provider_name TEXT,"
-        "  model_name TEXT,"
-        "  timestamp TEXT NOT NULL DEFAULT (datetime('now')),"
-        "  FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE"
-        ")");
+    // Migrations: each step runs only if version < step number
+    if (version < 1) {
+        if (!query.exec(
+            "CREATE TABLE IF NOT EXISTS conversations ("
+            "  id TEXT PRIMARY KEY,"
+            "  title TEXT NOT NULL DEFAULT 'New Chat',"
+            "  provider_name TEXT NOT NULL,"
+            "  model_name TEXT,"
+            "  created_at TEXT NOT NULL DEFAULT (datetime('now')),"
+            "  updated_at TEXT NOT NULL DEFAULT (datetime('now')),"
+            "  message_count INTEGER NOT NULL DEFAULT 0,"
+            "  preview TEXT"
+            ")")) {
+            qCritical() << "Failed to create conversations table:" << query.lastError().text();
+            return false;
+        }
 
-    if (!ok) {
-        qCritical() << "Failed to create messages table:" << query.lastError().text();
-        return false;
+        if (!query.exec(
+            "CREATE TABLE IF NOT EXISTS messages ("
+            "  id INTEGER PRIMARY KEY AUTOINCREMENT,"
+            "  conversation_id TEXT NOT NULL,"
+            "  role TEXT NOT NULL CHECK(role IN ('user', 'assistant', 'system')),"
+            "  content TEXT NOT NULL,"
+            "  provider_name TEXT,"
+            "  model_name TEXT,"
+            "  timestamp TEXT NOT NULL DEFAULT (datetime('now')),"
+            "  FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE"
+            ")")) {
+            qCritical() << "Failed to create messages table:" << query.lastError().text();
+            return false;
+        }
+
+        query.exec(
+            "CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, timestamp)");
+
+        // Update schema version
+        if (version == 0) {
+            query.exec("INSERT INTO schema_version VALUES (1)");
+        } else {
+            query.exec("UPDATE schema_version SET version = 1");
+        }
     }
-
-    query.exec(
-        "CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, timestamp)");
 
     return true;
 }

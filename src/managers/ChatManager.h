@@ -66,7 +66,8 @@ private slots:
     void onResponseChunk(const QString &chunk, const QString &conversationId);
     void onResponseComplete(const QString &fullResponse, const QString &conversationId,
                             const QVariantMap &usage);
-    void onProviderError(const QString &errorMessage, int httpStatusCode);
+    void onProviderError(const QString &errorMessage, int httpStatusCode,
+                         const QString &conversationId);
 
 private:
     void persistMessage(const QJsonObject &msg);

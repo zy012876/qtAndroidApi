@@ -18,14 +18,14 @@ public:
         return {"claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022",
                 "claude-3-opus-20240229", "claude-3-5-haiku-20241022"};
     }
-    bool supportsSystemPrompt() const override { return true; }
+
 
 protected:
     QNetworkRequest buildRequest(const QString &model, bool stream,
                                  const QVariantMap &extraParams) override;
     QByteArray buildRequestBody(const QString &userMessage, const QJsonArray &history,
                                 const QString &model, bool stream) override;
-    void processResponseChunk(const QByteArray &chunk, QString &partialLine) override;
+    void processResponseChunk(const QByteArray &chunk) override;
     QPair<QString, QVariantMap> parseFinalResponse(const QByteArray &data) override;
 
 private:

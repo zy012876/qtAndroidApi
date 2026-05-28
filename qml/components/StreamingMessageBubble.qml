@@ -16,8 +16,8 @@ Item {
 
     Rectangle {
         id: bubbleContainer
-        width: Math.min(implicitWidth, parent.width - 64)
-        height: contentCol.implicitHeight + 20
+        width: parent.width - 64
+        height: contentCol.childrenRect.height + 20
         radius: Theme.bubbleRadius
         color: Theme.assistantBubbleColor
         anchors {
@@ -25,11 +25,12 @@ Item {
             leftMargin: 16
         }
 
-        ColumnLayout {
+        Column {
             id: contentCol
             anchors.fill: parent
             anchors.margins: 12
             spacing: 4
+            width: parent.width
 
             Row {
                 spacing: 4
@@ -54,7 +55,7 @@ Item {
                 font.pixelSize: Theme.fontSizeBody
                 wrapMode: Text.Wrap
                 textFormat: Text.PlainText
-                Layout.fillWidth: true
+                width: parent.width
             }
         }
 

@@ -51,7 +51,4 @@ QStringList ProviderFactory::registeredProviderIds() const
     return m_settings->providersWithKeys();
 }
 
-AiProviderBase *ProviderFactory::currentProvider() const
-{
-    return nullptr;
-}
+

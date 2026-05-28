@@ -28,9 +28,9 @@ public:
     virtual QString defaultEndpoint() const = 0;
     virtual QStringList supportedModels() const { return {}; }
     virtual bool supportsStreaming() const { return true; }
-    virtual bool supportsSystemPrompt() const { return false; }
 
     void setApiKey(const QString &key);
+    void setConversationId(const QString &id);
     QString apiKey() const;
     bool isAvailable() const;
 
@@ -45,7 +45,8 @@ signals:
     void responseChunkReceived(const QString &chunk, const QString &conversationId);
     void responseComplete(const QString &fullResponse, const QString &conversationId,
                           const QVariantMap &usageMetadata);
-    void errorOccurred(const QString &errorMessage, int httpStatusCode);
+    void errorOccurred(const QString &errorMessage, int httpStatusCode,
+                       const QString &conversationId);
     void streamingStarted(const QString &conversationId);
     void streamingFinished(const QString &conversationId);
     void availabilityChanged(bool available);
@@ -57,7 +58,7 @@ protected:
                                         const QJsonArray &messageHistory,
                                         const QString &model,
                                         bool stream) = 0;
-    virtual void processResponseChunk(const QByteArray &chunk, QString &partialLine) = 0;
+    virtual void processResponseChunk(const QByteArray &chunk) = 0;
     virtual QPair<QString, QVariantMap> parseFinalResponse(const QByteArray &data) = 0;
 
     QNetworkAccessManager *m_networkManager;

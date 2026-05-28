@@ -12,6 +12,11 @@ void AiProviderBase::setApiKey(const QString &key)
     emit availabilityChanged(isAvailable());
 }
 
+void AiProviderBase::setConversationId(const QString &id)
+{
+    m_currentConversationId = id;
+}
+
 QString AiProviderBase::apiKey() const
 {
     return m_apiKey;
@@ -43,8 +48,7 @@ void AiProviderBase::sendMessage(const QString &userMessage,
 
     connect(m_currentReply, &QNetworkReply::readyRead, this, [this]() {
         QByteArray chunk = m_currentReply->readAll();
-        QString partialLine;
-        processResponseChunk(chunk, partialLine);
+        processResponseChunk(chunk);
     });
 
     connect(m_currentReply, &QNetworkReply::finished, this, [this]() {
@@ -54,7 +58,8 @@ void AiProviderBase::sendMessage(const QString &userMessage,
         if (m_currentReply->error() != QNetworkReply::NoError) {
             int statusCode = m_currentReply->attribute(
                 QNetworkRequest::HttpStatusCodeAttribute).toInt();
-            emit errorOccurred(m_currentReply->errorString(), statusCode);
+            emit errorOccurred(m_currentReply->errorString(), statusCode,
+                               m_currentConversationId);
         } else {
             QByteArray data = m_currentReply->readAll();
             if (!data.isEmpty()) {

@@ -111,35 +111,8 @@ Page {
                     }
                 }
 
-                // Preferences section
-                Label {
-                    text: "Preferences"
-                    font.pixelSize: Theme.fontSizeTitle
-                    font.bold: true
-                    color: Theme.primaryTextColor
-                    Layout.margins: Theme.pageMargin
-                }
 
-                Rectangle {
-                    Layout.fillWidth: true
-                    height: 48
-                    color: Theme.surfaceColor
-                    radius: Theme.bubbleRadius
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 12
-                        Label {
-                            text: "Dark Mode"
-                            color: Theme.primaryTextColor
-                            Layout.fillWidth: true
-                        }
-                        Switch {
-                            checked: settingsManager.darkMode()
-                            onToggled: settingsManager.setDarkMode(checked)
-                        }
-                    }
-                }
             }
         }
     }

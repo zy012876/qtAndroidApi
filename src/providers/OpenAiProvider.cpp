@@ -33,7 +33,7 @@ QByteArray OpenAiProvider::buildRequestBody(const QString &userMessage,
     return QJsonDocument(body).toJson(QJsonDocument::Compact);
 }
 
-void OpenAiProvider::processResponseChunk(const QByteArray &chunk, QString & /*partialLine*/)
+void OpenAiProvider::processResponseChunk(const QByteArray &chunk)
 {
     m_partialLine += QString::fromUtf8(chunk);
 

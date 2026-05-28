@@ -17,14 +17,14 @@ public:
     QStringList supportedModels() const override {
         return {"gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-3.5-turbo"};
     }
-    bool supportsSystemPrompt() const override { return true; }
+
 
 protected:
     QNetworkRequest buildRequest(const QString &model, bool stream,
                                  const QVariantMap &extraParams) override;
     QByteArray buildRequestBody(const QString &userMessage, const QJsonArray &history,
                                 const QString &model, bool stream) override;
-    void processResponseChunk(const QByteArray &chunk, QString &partialLine) override;
+    void processResponseChunk(const QByteArray &chunk) override;
     QPair<QString, QVariantMap> parseFinalResponse(const QByteArray &data) override;
 
 private:
